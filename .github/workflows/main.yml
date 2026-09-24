@@ -1,17 +1,18 @@
 name: Build Naod HD Camera APK
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build:
+    name: Build Android APK
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout source code
         uses: actions/checkout@v4
 
       - name: Setup Flutter
@@ -19,7 +20,7 @@ jobs:
         with:
           channel: stable
 
-      - name: Check Flutter
+      - name: Check Flutter version
         run: flutter --version
 
       - name: Create Android platform if missing
@@ -28,14 +29,20 @@ jobs:
             flutter create --platforms=android .
           fi
 
-      - name: Get packages
+      - name: Get Flutter packages
         run: flutter pub get
 
       - name: Build APK
-        run: flutter build apk --release
+        run: |
+          flutter build apk --release \
+            --enable-experiment=dot-shorthands
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Naod-HD-Camera-APK
           path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+
+      - name: Build completed
+        run: echo "Naod HD Camera APK build completed successfully!"
