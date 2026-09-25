@@ -24,6 +24,9 @@ jobs:
       - name: Flutter Doctor
         run: flutter doctor -v
 
+      - name: Create Flutter platform files
+        run: flutter create . --platforms=android
+
       - name: Get Dependencies
         run: flutter pub get
 
